@@ -3,6 +3,27 @@
 		return obj.data(PLUGIN_NAME);
 	};
 
+	var FIELDS = {
+			'RXcommands' : {
+					group: 'Receiver',
+					min : 1000,
+					max : 2000,
+					name: ['Throttle', 'Roll', 'Pitch', 'Yaw', 'Aux1', 'Aux2', 'Aux3', 'Aux4']
+			},
+			'PWMOutVals' : {
+					group: 'Motors',
+					min: 1000,
+					max: 2000,
+					name: ['Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Motor 5', 'Motor 6']
+			},
+			'GyroRaw' : {
+				group: 'Gyro raw',
+				min: -1,
+				max: 1,
+				name: ['Pitch', 'Roll', 'Yaw']
+		}
+	}
+	
 	var privateMethods = {
 		build : function(self) {
 			var data = pluginData(self);
@@ -16,20 +37,45 @@
 			data.canvas = document.getElementById(id + "_canvas");
 			data.context = data.canvas.getContext('2d');
 		},
-
 		seekToFrame : function(self, frame) {
 			console.log("Seeking to frame: " + frame);
 			var data = pluginData(self);
 			data.currentFrame = frame;
 			privateMethods.refresh(self);
 		},
+		drawChart: function(self, field, index, x1, y1, x2, y2, color, startFrame) {
+			var data = pluginData(self);
+			var context = data.context;
+			
+			context.strokeStyle = color;
+			var frame = startFrame, x = x1;
+			context.beginPath();
+			while (x < x2 && Math.floor(frame) < data.frames.length) {
+				var value=0;
+				var c1 = (FIELDS[field].max+FIELDS[field].min)/2;
+				var c2 = (FIELDS[field].max-FIELDS[field].min)/2;
+				var c3 = (y2-y1)/2;
+				if (index!=-1) {
+					value =  (data.frames[Math.floor(frame)][field][index] - c1) / c2;
+				} else {
+					value =  (data.frames[Math.floor(frame)][field] - c1) / c2;
+				}
+				if (x == x1) {
+					context.moveTo(x, y1+c3-value*c3*0.9);
+				} else {
+					context.lineTo(x, y1+c3-value*c3*0.9);
+				}
+				x++;
+				frame += data.scale;
+			}
+			context.stroke();
+		},
 		refresh : function(self) {
 			var data = pluginData(self);
 			// here we will render the graph. Current frame in the middle.
 			var width = self.width(), height=self.height(), h2=height/2, framesVisible = width * data.scale, startFrame = data.currentFrame
 					- framesVisible / 2;
-			if (startFrame < 0)
-				startFrame = 0;
+			if (startFrame < 0) startFrame = 0;
 			console.log("Center: " + data.currentFrame);
 			console.log("Start: " + startFrame);
 			console.log("Visible: " + framesVisible);
@@ -42,28 +88,34 @@
 			context.fillStyle = "rgb(0, 0, 0)";
 			context.fillRect(0, 0, self.width(), self.height());
 			
-
-			for (var c = 0; c < 8; c++) {
-				context.strokeStyle = colors[c];
-				var frame = startFrame, x = 0;
-				context.beginPath();
-				while (x < width && Math.floor(frame) < data.frames.length) {
-					var value=0;
-					if (c>0) {
-						value =  ((data.frames[Math.floor(frame)].RXcommands[c] - 1500) / 500) * h2 *0.8;
+			var chartHeight = height / data.charts.length; // one chart
+			var k=0;
+			
+			for (var i = 0; i<data.charts.length; i++) {
+				var chart = data.charts[i];
+				console.log("Drawing chart " + i);
+				for (var f = 0; f<chart.length; f++) {
+					var field = chart[f];
+					if (field.indexOf('.')>0) {
+						console.log("Indexed property " + field);
+						var v = field.split('.');
+						privateMethods.drawChart(self, field[0], +field[1], 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
+						if (k>7) k=0;
 					} else {
-						value =  ((data.frames[Math.floor(frame)].RXcommands[c] - 1500) / 500) * h2 *0.4;
+						if (FIELDS[field].name instanceof Array ) {
+							for (var j=0; j<FIELDS[field].name.length; j++) {
+								console.log("Drawing field " + FIELDS[field].group+"->"+FIELDS[field].name[j]);
+								privateMethods.drawChart(self, field, j, 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
+								if (k>7) k=0;
+							}
+						} else {
+							privateMethods.drawChart(self, field, -1, 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
+							if (k>7) k=0;
+						}
 					}
-					if (x == 0) {
-						context.moveTo(x, h2-value);
-					} else {
-						context.lineTo(x, h2-value);
-					}
-					x++;
-					frame += data.scale;
 				}
-				context.stroke();
 			}
+			
 		},
 		decodeFrame : function(i, data) {
 			var obj = {};
@@ -184,10 +236,15 @@
 					self.data(PLUGIN_NAME, $.extend(true, {
 						data : undefined,
 						currentFrame : 0,
-						scale : 1,
+						scale : 0.5,
 						frames : [],
 						canvas : null,
-						context : null
+						context : null,
+						charts: [
+						         	['RXcommands'],
+						         	['PWMOutVals'],
+						         	['GyroRaw']
+						         ]
 					}, options));
 					data = pluginData(self);
 				}
@@ -221,7 +278,7 @@
 					if ((i + 3 + len) < tmp.byteLength
 							&& tmp.getInt8(i + 3 + len) == 5) {
 						var frameData = privateMethods.decodeFrame(i + 2, tmp);
-						console.log(frameData);
+						if (data.frames.length==0) console.log(frameData);
 						data.frames.push(frameData);
 						i += len + 2;
 						f++;
