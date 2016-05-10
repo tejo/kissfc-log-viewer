@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+    "minimum_chrome_version": "38",
+    "version": "0.0.1",
+
+    "author": "Alexander Fedorov",
+    "name": "KissFC Log Viewer",
+    "short_name": "KissFC Log Viewer",
+    "description": "",
+
+    "offline_enabled": true,
+
+    "app": {
+        "background": {
+            "scripts": ["eventPage.js"],
+            "persistent": false
+        }
+    },
+
+    "permissions": [
+        "storage",
+        "notifications",
+	"fileSystem"
+    ],
+
+    "icons": {
+        "128": "images/icon_128.png"
+    }
+}

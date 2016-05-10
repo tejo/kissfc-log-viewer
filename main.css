@@ -1,0 +1,24 @@
+
+html, body {
+    height: 100%;
+}
+body {
+    font-family: sans-serif;
+    font-size: 12px;
+    color: white;
+    background-color: #1e1e1e;
+}
+
+#log {
+	width: 600px;
+	height: 400px;
+	background-color: #444;
+}
+
+#pager {
+	width: 600px;
+	height: 60px;
+	background-color: #444;
+}
+
+
