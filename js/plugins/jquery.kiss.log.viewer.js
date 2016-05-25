@@ -43,6 +43,10 @@
 			data.currentFrame = frame;
 			privateMethods.refresh(self);
 		},
+		dataDetails : function(self, cursor) {
+			// var data = pluginData(self);
+      // console.log(data.frames[data.currentFrame + Math.floor(cursor * data.scale)].RXcommands[0])
+		},
 		drawChart: function(self, field, index, x1, y1, x2, y2, color, startFrame) {
 			var data = pluginData(self);
 			var context = data.context;
@@ -249,6 +253,10 @@
 					data = pluginData(self);
 				}
 				privateMethods.build(self);
+        
+				self.on("mousemove", function(event) {
+					privateMethods.dataDetails(self, event.offsetX);
+				});
 
 				$(document).on("kiss:seek_to_frame", function(event, frame) {
 					console.log("Seeking to frame: " + frame);
