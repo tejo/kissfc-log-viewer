@@ -44,8 +44,13 @@
 			privateMethods.refresh(self);
 		},
 		dataDetails : function(self, cursor) {
-			// var data = pluginData(self);
-      // console.log(data.frames[data.currentFrame + Math.floor(cursor * data.scale)].RXcommands[0])
+			// privateMethods.refresh(self);
+			var data = pluginData(self);
+			var context = data.context;
+			// context.fillStyle = "rgba(255, 255, 255, 1)";
+			// context.fillRect(Math.floor(data.currentFrame * data.scale) - 4, 0, 8, self.height());
+			// context.fillRect(cursor, 0, 1, self.height());
+      console.log(data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[0])
 		},
 		drawChart: function(self, field, index, x1, y1, x2, y2, color, startFrame) {
 			var data = pluginData(self);
@@ -119,7 +124,8 @@
 					}
 				}
 			}
-			
+
+      data.startFrame = startFrame;
 		},
 		decodeFrame : function(i, data) {
 			var obj = {};
@@ -256,6 +262,9 @@
         
 				self.on("mousemove", function(event) {
 					privateMethods.dataDetails(self, event.offsetX);
+				});
+				self.on("mouseout", function(event) {
+          privateMethods.refresh(self);
 				});
 
 				$(document).on("kiss:seek_to_frame", function(event, frame) {
