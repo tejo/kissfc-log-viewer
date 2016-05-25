@@ -15,6 +15,14 @@
 			data.canvas = document.getElementById(id + "_canvas");
 			data.context = data.canvas.getContext('2d');
 		},
+
+    drawBookmark: function(self, cursor){
+      publicMethods.refresh(self);
+			var data = pluginData(self);
+			var context = data.context;
+			context.fillStyle = "rgba(0, 0, 0, 0.2)";
+			context.fillRect(cursor - 4, 0, 8, self.height());
+    }
 	};
 
 	var publicMethods = {
@@ -33,12 +41,14 @@
 				privateMethods.build(self);
 				
 				self.on("click", function(event) {
-					if (data.frames.length > event.clientX) {
-						$(document).trigger("kiss:seek_to_frame", [ data.frames[event.clientX].frame ]);
+					if (data.frames.length > event.offsetX ) {
+            privateMethods.drawBookmark(self, event.offsetX);
+						$(document).trigger("kiss:seek_to_frame", [ data.frames[event.offsetX].frame ]);
 					}
 				});
 				
 				$(document).on("kiss:set_frames", function(event, frames) {
+          data.totalFrames = frames;
 					data.frames = [];
 					var xfactor = frames.length / self.width(); // how many frames in one pixel
 					for (var x = 0; x<self.width(); x++ ) {
