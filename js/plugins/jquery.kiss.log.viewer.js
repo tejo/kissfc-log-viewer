@@ -44,13 +44,25 @@
 			privateMethods.refresh(self);
 		},
 		dataDetails : function(self, cursor) {
+      var data = pluginData(self);
+      if (data.frames.length == 0) return
 			privateMethods.refresh(self);
-			var data = pluginData(self);
 			var context = data.context;
 			context.fillStyle = "rgba(255, 255, 255, 1)";
 			context.fillRect(cursor, 0, 1, self.height());
       $("#details").html('Throttle' + data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[0])
 		},
+    handleZoom : function(self, event) {
+      var data = pluginData(self);
+      if (data.frames.length == 0) return
+        if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+          if (data.scale < 1) data.scale = data.scale + 0.1
+        }
+        else {
+          if (data.scale > 0.2) data.scale = data.scale - 0.1
+        }
+      privateMethods.refresh(self);
+    },
 		drawChart: function(self, field, index, x1, y1, x2, y2, color, startFrame) {
 			var data = pluginData(self);
 			var context = data.context;
@@ -262,9 +274,16 @@
 				self.on("mousemove", function(event) {
 					privateMethods.dataDetails(self, event.offsetX);
 				});
-				self.on("mouseout", function(event) {
+
+        self.on("mouseout", function(event) {
+          var data = pluginData(self);
+          if (data.frames.length == 0) return
           privateMethods.refresh(self);
-				});
+        });
+
+        $(window).bind('mousewheel DOMMouseScroll', function(event){
+          privateMethods.handleZoom(self, event)
+        });
 
 				$(document).on("kiss:seek_to_frame", function(event, frame) {
 					console.log("Seeking to frame: " + frame);
