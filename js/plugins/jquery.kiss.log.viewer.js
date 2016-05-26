@@ -44,13 +44,12 @@
 			privateMethods.refresh(self);
 		},
 		dataDetails : function(self, cursor) {
-			// privateMethods.refresh(self);
+			privateMethods.refresh(self);
 			var data = pluginData(self);
 			var context = data.context;
-			// context.fillStyle = "rgba(255, 255, 255, 1)";
-			// context.fillRect(Math.floor(data.currentFrame * data.scale) - 4, 0, 8, self.height());
-			// context.fillRect(cursor, 0, 1, self.height());
-      console.log(data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[0])
+			context.fillStyle = "rgba(255, 255, 255, 1)";
+			context.fillRect(cursor, 0, 1, self.height());
+      $("#details").html('Throttle' + data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[0])
 		},
 		drawChart: function(self, field, index, x1, y1, x2, y2, color, startFrame) {
 			var data = pluginData(self);
