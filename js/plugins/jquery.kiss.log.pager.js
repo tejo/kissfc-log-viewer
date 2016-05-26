@@ -23,6 +23,7 @@
 			context.fillStyle = "rgba(0, 0, 0, 0.2)";
 			context.fillRect(cursor - 4, 0, 8, self.height());
     }
+    
 	};
 
 	var publicMethods = {
@@ -46,19 +47,20 @@
 						$(document).trigger("kiss:seek_to_frame", [ data.frames[event.offsetX].frame ]);
 					}
 				});
+
+        $(window).on('resize', function(event){
+          var pager = $('#' + self.attr("id") + "_canvas")
+          pager[0].width = window.innerWidth;
+          pager[0].height = window.innerHeight;
+          var data = pluginData(self);
+          if (data.frames.length == 0) return
+          publicMethods.setFrames(self, data.totalFrames)
+					publicMethods.refresh(self);
+        });
 				
 				$(document).on("kiss:set_frames", function(event, frames) {
           data.totalFrames = frames;
-					data.frames = [];
-					var xfactor = frames.length / self.width(); // how many frames in one pixel
-					for (var x = 0; x<self.width(); x++ ) {
-						var frame = Math.floor(x*xfactor);
-						var value = {
-								frame: frame,
-								value: self.height() *  ((frames[frame].RXcommands[0] - 1000) / 1000)
-						}
-						data.frames.push(value);
-					}
+          publicMethods.setFrames(self, frames)
 					publicMethods.refresh(self);
 				});
 			});
@@ -80,7 +82,20 @@
 	            context.lineTo(x, self.height() - data.frames[x].value);
 	            context.stroke();
 			}
-		}
+		},
+    setFrames: function(self, frames){
+      var data = pluginData(self);
+      data.frames = [];
+      var xfactor = frames.length / self.width(); // how many frames in one pixel
+      for (var x = 0; x<self.width(); x++ ) {
+        var frame = Math.floor(x*xfactor);
+        var value = {
+          frame: frame,
+          value: self.height() *  ((frames[frame].RXcommands[0] - 1000) / 1000)
+        }
+        data.frames.push(value);
+      }
+    }
 	};
 
 	$.fn.kissLogPager = function(method) {

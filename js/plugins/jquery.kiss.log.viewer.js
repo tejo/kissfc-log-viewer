@@ -50,7 +50,12 @@
 			var context = data.context;
 			context.fillStyle = "rgba(255, 255, 255, 1)";
 			context.fillRect(cursor, 0, 1, self.height());
-      $("#details").html('Throttle' + data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[0])
+
+      var label = ' ';
+      for (var i = 0; i < FIELDS['RXcommands'].name.length; i++ ) {
+        label = label + FIELDS['RXcommands'].name[i] + " :" +data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[i] + " ";
+      }
+      $("#details").html(label);
 		},
     handleZoom : function(self, event) {
       var data = pluginData(self);
@@ -283,6 +288,15 @@
 
         $(window).bind('mousewheel DOMMouseScroll', function(event){
           privateMethods.handleZoom(self, event)
+        });
+
+        $(window).on('resize', function(event){
+          var viewer = $('#' + self.attr("id") + "_canvas")
+          viewer[0].width = window.innerWidth;
+          viewer[0].height = window.innerHeight;
+          var data = pluginData(self);
+          if (data.frames.length == 0) return
+          privateMethods.refresh(self);
         });
 
 				$(document).on("kiss:seek_to_frame", function(event, frame) {
