@@ -286,7 +286,7 @@
           privateMethods.refresh(self);
         });
 
-        $(window).bind('mousewheel DOMMouseScroll', function(event){
+        $(self).bind('mousewheel DOMMouseScroll', function(event){
           privateMethods.handleZoom(self, event)
         });
 
@@ -302,6 +302,10 @@
 				$(document).on("kiss:seek_to_frame", function(event, frame) {
 					console.log("Seeking to frame: " + frame);
 					privateMethods.seekToFrame(self, frame);
+				});
+
+				$(document).on("kiss:get_logger_data", function() {
+          window.logger_data = pluginData(self)
 				});
 			});
 		},

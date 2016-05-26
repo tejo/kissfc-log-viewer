@@ -18,10 +18,13 @@
 
     drawBookmark: function(self, cursor){
       publicMethods.refresh(self);
+			$(document).trigger("kiss:get_logger_data");
 			var data = pluginData(self);
+      var xfactor = data.totalFrames.length / self.width();
 			var context = data.context;
-			context.fillStyle = "rgba(0, 0, 0, 0.2)";
-			context.fillRect(cursor - 4, 0, 8, self.height());
+			context.fillStyle = "rgba(188, 188, 188, 0.3)";
+      var w = (self.width() * window.logger_data.scale) / xfactor
+			context.fillRect(cursor - w/2, 0, w, self.height());
     }
     
 	};
