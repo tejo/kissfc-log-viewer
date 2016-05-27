@@ -150,7 +150,7 @@
 		} else if (typeof method === 'object' || !method) {
 			return publicMethods.init.apply(this, arguments);
 		} else {
-			$.error('Method [' + method + '] not available in $.kissLogPasger');
+			$.error('Method [' + method + '] not available in $.kissLogPager');
 		}
 	};
 })(jQuery);

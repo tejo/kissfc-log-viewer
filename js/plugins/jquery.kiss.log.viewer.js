@@ -56,13 +56,8 @@
       var data = pluginData(self);
       if (data.frames.length == 0) return
 
-      data.visual_cursor.css({left:cursor + "px", top: 0}).show()
-
-      var label = ' ';
-      for (var i = 0; i < FIELDS['RXcommands'].name.length; i++ ) {
-        label = label + FIELDS['RXcommands'].name[i] + " :" +data.frames[Math.floor(data.startFrame + (cursor * data.scale))].RXcommands[i] + " ";
-      }
-      $("#details").html(label);
+      data.visual_cursor.css({left:cursor + "px", top: 0}).show();
+      $(document).trigger("kiss:update_legend", [ FIELDS, cursor, data.startFrame, data.scale, data.frames ]);
 		},
     handleZoom : function(self, event) {
       var data = pluginData(self);
@@ -272,6 +267,7 @@
 						scale : 0.5,
 						frames : [],
 						canvas : null,
+						visual_cursor : null,
 						context : null,
 						charts: [
 						         	['RXcommands'],

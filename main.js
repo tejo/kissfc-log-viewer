@@ -3,6 +3,7 @@
 $(document).ready(function() {
 	$('#log').kissLogViewer();
 	$('#pager').kissLogPager();
+	$('#legend').kissLogLegend();
 
 	$('#openFile').on('click', function() {
 		var accepts = [ {
