@@ -14,7 +14,10 @@
 			c.appendTo(self);
 
 			var b = $('<div>').attr('id', id + "_bookmark")
-        .css({height:height, width:"1px", position: "absolute", backgroundColor: "rgba(188, 188, 188, 0.5)"}).hide();
+        .css({height:height, width:"1px", 
+              pointerEvents:'none',
+              position: "absolute", 
+              backgroundColor: "rgba(188, 188, 188, 0.5)"}).hide();
 			b.appendTo(self);
 
       data.bookmark = $("#" + id + "_bookmark") 

@@ -34,6 +34,15 @@
 					width).attr("height", height);
 			c.appendTo(self);
 
+			var b = $('<div>').attr('id', id + "_visual_cursor")
+        .css({height:height, width:"1px", 
+              pointerEvents:'none',
+              position: "absolute", 
+              backgroundColor: "rgba(255, 255, 255, 1)"}).hide();
+			b.appendTo(self);
+
+
+      data.visual_cursor = $("#" + id + "_visual_cursor") 
 			data.canvas = document.getElementById(id + "_canvas");
 			data.context = data.canvas.getContext('2d');
 		},
@@ -46,10 +55,8 @@
 		dataDetails : function(self, cursor) {
       var data = pluginData(self);
       if (data.frames.length == 0) return
-			privateMethods.refresh(self);
-			var context = data.context;
-			context.fillStyle = "rgba(255, 255, 255, 1)";
-			context.fillRect(cursor, 0, 1, self.height());
+
+      data.visual_cursor.css({left:cursor + "px", top: 0}).show()
 
       var label = ' ';
       for (var i = 0; i < FIELDS['RXcommands'].name.length; i++ ) {
@@ -281,9 +288,7 @@
 				});
 
         self.on("mouseout", function(event) {
-          var data = pluginData(self);
-          if (data.frames.length == 0) return
-          privateMethods.refresh(self);
+          data.visual_cursor.hide()
         });
 
         $(self).bind('mousewheel DOMMouseScroll', function(event){
