@@ -12,19 +12,22 @@
 			var c = $('<canvas>').attr('id', id + "_canvas").attr("width",
 					width).attr("height", height);
 			c.appendTo(self);
+
+			var b = $('<div>').attr('id', id + "_bookmark")
+        .css({height:height, width:"1px", position: "absolute", backgroundColor: "rgba(188, 188, 188, 0.5)"}).hide();
+			b.appendTo(self);
+
+      data.bookmark = $("#" + id + "_bookmark") 
 			data.canvas = document.getElementById(id + "_canvas");
 			data.context = data.canvas.getContext('2d');
 		},
 
     drawBookmark: function(self, cursor){
-      publicMethods.refresh(self);
-			$(document).trigger("kiss:get_logger_data");
+      var scale = $("#log").data()['kiss.log.viewer'].scale 
 			var data = pluginData(self);
       var xfactor = data.totalFrames.length / self.width();
-			var context = data.context;
-			context.fillStyle = "rgba(188, 188, 188, 0.3)";
-      var w = (self.width() * window.logger_data.scale) / xfactor
-			context.fillRect(cursor - w/2, 0, w, self.height());
+      var w = (self.width() * scale) / xfactor
+      data.bookmark.css({left:(cursor - w/2) + "px", top: 0, width:w + "px"}).show()
     }
     
 	};
@@ -37,6 +40,7 @@
 					self.data(PLUGIN_NAME, $.extend(true, {
 						frames : [],
 						canvas: null,
+            bookmark: null,
 						context: null,
 					}, options));
 					data = pluginData(self);
@@ -46,6 +50,7 @@
 				
 				self.on("click", function(event) {
 					if (data.frames.length > event.offsetX ) {
+            data.currentCursor =  event.offsetX
             privateMethods.drawBookmark(self, event.offsetX);
 						$(document).trigger("kiss:seek_to_frame", [ data.frames[event.offsetX].frame ]);
 					}
@@ -66,7 +71,36 @@
           publicMethods.setFrames(self, frames)
 					publicMethods.refresh(self);
 				});
-			});
+
+        //handle arrow keys
+        $(document).keydown(function(e) {
+          if (data.frames.length == 0) return
+
+            var scale = $("#log").data()['kiss.log.viewer'].scale 
+
+          if(typeof(data.currentCursor) == "undefined"){
+            var xfactor = data.totalFrames.length / self.width();
+            data.currentCursor = Math.floor(((self.width() * scale) / xfactor)/2)
+          }
+            switch(e.which) {
+              case 37: // left
+                data.currentCursor = data.currentCursor - (10*scale)
+                  $(document).trigger("kiss:seek_to_frame", [ data.frames[data.currentCursor].frame ]);
+                privateMethods.drawBookmark(self, data.currentCursor);
+                console.log('left');
+                break;
+              case 39: // right
+                data.currentCursor = data.currentCursor + (10*scale)
+                  $(document).trigger("kiss:seek_to_frame", [ data.frames[data.currentCursor].frame ]);
+                privateMethods.drawBookmark(self, data.currentCursor);
+                console.log('right');
+                break;
+              default: return; 
+            }
+          e.preventDefault(); // prevent the default action (scroll / move caret)
+        });
+
+      });
 		},
 		destroy : function() {
 			return this.each(function() {
@@ -85,6 +119,11 @@
 	            context.lineTo(x, self.height() - data.frames[x].value);
 	            context.stroke();
 			}
+
+      var scale = $("#log").data()['kiss.log.viewer'].scale 
+      var xfactor = data.totalFrames.length / self.width();
+      data.currentCursor = Math.floor(((self.width() * scale) / xfactor)/2)
+      privateMethods.drawBookmark(self, data.currentCursor);
 		},
     setFrames: function(self, frames){
       var data = pluginData(self);

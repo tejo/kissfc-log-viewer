@@ -303,10 +303,6 @@
 					console.log("Seeking to frame: " + frame);
 					privateMethods.seekToFrame(self, frame);
 				});
-
-				$(document).on("kiss:get_logger_data", function() {
-          window.logger_data = pluginData(self)
-				});
 			});
 		},
 		destroy : function() {
