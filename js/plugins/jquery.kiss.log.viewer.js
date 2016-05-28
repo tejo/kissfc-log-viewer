@@ -17,7 +17,7 @@
 					name: ['Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Motor 5', 'Motor 6']
 			},
 			'GyroXYZ' : {
-				group: 'Gyro raw',
+				group: 'Gyro XYZ',
 				min: -2000,
 				max: 2000,
 				name: ['Pitch', 'Roll', 'Yaw']
@@ -126,7 +126,7 @@
 					if (field.indexOf('.')>0) {
 						console.log("Indexed property " + field);
 						var v = field.split('.');
-						privateMethods.drawChart(self, field[0], +field[1], 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
+						privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
 						if (k>7) k=0;
 					} else {
 						if (FIELDS[field].name instanceof Array ) {
@@ -271,8 +271,8 @@
 						context : null,
 						charts: [
 						         	['RXcommands'],
-						         	['PWMOutVals'],
-						         	['GyroXYZ']
+						         	['PWMOutVals.0', 'PWMOutVals.1', 'PWMOutVals.2', 'PWMOutVals.3'],
+						         	['GyroXYZ.0']
 						         ]
 					}, options));
 					data = pluginData(self);
