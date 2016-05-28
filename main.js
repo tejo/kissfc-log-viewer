@@ -36,7 +36,7 @@ $(document).ready(function() {
 				var reader = new FileReader();
 
 				reader.onprogress = function(e) {
-					if (e.total > 1000000) {
+					if (e.total > 10000000) {
 						console.log('File limit (xx KB) exceeded, aborting');
 						reader.abort();
 					}

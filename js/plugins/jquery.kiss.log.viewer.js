@@ -16,10 +16,10 @@
 					max: 2000,
 					name: ['Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Motor 5', 'Motor 6']
 			},
-			'GyroRaw' : {
+			'GyroXYZ' : {
 				group: 'Gyro raw',
-				min: -1,
-				max: 1,
+				min: -2000,
+				max: 2000,
 				name: ['Pitch', 'Roll', 'Yaw']
 		}
 	}
@@ -272,7 +272,7 @@
 						charts: [
 						         	['RXcommands'],
 						         	['PWMOutVals'],
-						         	['GyroRaw']
+						         	['GyroXYZ']
 						         ]
 					}, options));
 					data = pluginData(self);
