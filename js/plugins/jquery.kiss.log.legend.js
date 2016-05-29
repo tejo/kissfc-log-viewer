@@ -22,6 +22,10 @@
           }
           privateMethods.build(self);
 
+          $('input[type=checkbox]').on('change', function(event){
+            console.log(event);
+          });
+
           $(document)
             .on(
                 "kiss:update_legend",
@@ -36,45 +40,35 @@
                   var label = '<br>';
 
                   if (frame !== undefined) {
+                    self.html("");
 
                     for (var i = 0; i < fields['RXcommands'].values.length; i++) {
-                      label = label
-                        + '<span style="color:' 
-                        + fields['RXcommands'].values[i].color
-                        +'">'
-                        + fields['RXcommands'].values[i].name
-                        + " :"
-                        + frame.RXcommands[i]
-                        + "</span><br>";
+                      var checkbox, label = publicMethods.buildLegendItem(fields['RXcommands'].values[i], 'RXcommands', frame.RXcommands[i], i)
+                      self.append(checkbox);
+                      self.append(label);
+                      self.append(document.createElement('br'));
                     }
 
-                    label = label + '<br>';
+                    self.append(document.createElement('br'));
+
 
                     for (var i = 0; i < fields['PWMOutVals'].values.length; i++) {
-                      label = label
-                        + '<span style="color:' 
-                        + fields['PWMOutVals'].values[i].color
-                        +'">'
-                        + fields['PWMOutVals'].values[i].name
-                        + " :"
-                        + frame.PWMOutVals[i]
-                        + "</span><br>";
+                      var checkbox, label = publicMethods.buildLegendItem(fields['PWMOutVals'].values[i], 'PWMOutVals', frame.PWMOutVals[i], i)
+                      self.append(checkbox);
+                      self.append(label);
+                      self.append(document.createElement('br'));
                     }
 
-                    label = label + '<br>';
+                    self.append(document.createElement('br'));
 
                     for (var i = 0; i < fields['GyroXYZ'].values.length; i++) {
-                      label = label
-                        + '<span style="color:' 
-                        + fields['GyroXYZ'].values[i].color
-                        +'">'
-                        + fields['GyroXYZ'].values[i].name
-                        + " :"
-                        + frame.GyroXYZ[i]
-                        + "</span><br>";
+                      var checkbox, label = publicMethods.buildLegendItem(fields['GyroXYZ'].values[i], 'GyroXYZ', frame.GyroXYZ[i], i)
+                      self.append(checkbox);
+                      self.append(label);
+                      self.append(document.createElement('br'));
                     }
+
                   }
-                  self.html(label);
                 });
         });
 
@@ -83,6 +77,29 @@
       return this.each(function() {
         $(this).removeData(PLUGIN_NAME);
       });
+    },
+
+    checkboxChanged: function(e){
+      $(document).trigger("kiss:toggle_values", [e]);
+    },
+
+    buildLegendItem: function(field, groupname, frame, i){
+      var checkboxId = groupname+'.' + String(i);
+
+      var checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.name = field.name;
+      checkbox.value = 1;
+      checkbox.checked = field.visible;
+      checkbox.id = checkboxId;
+      checkbox.addEventListener("click", publicMethods.checkboxChanged)
+
+      var label = document.createElement('label');
+      label.htmlFor = checkboxId;
+      label.style.color = field.color;
+      label.appendChild(document.createTextNode(field.name + ':' + frame));
+      
+      return [checkbox, label]
     },
   };
 

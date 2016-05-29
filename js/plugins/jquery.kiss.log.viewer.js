@@ -143,7 +143,9 @@
 					if (field.indexOf('.')>0) {
 						console.log("Indexed property " + field);
 						var v = field.split('.');
-						privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, FIELDS[v[0]].values[v[1]].color, startFrame);
+            if(FIELDS[v[0]].values[v[1]].visible){
+              privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, FIELDS[v[0]].values[v[1]].color, startFrame);
+            }
 						if (k>7) k=0;
 					} else {
 						if (FIELDS[field].values instanceof Array ) {
@@ -272,7 +274,14 @@
 			obj.ESC_TelemetrieStats[4] = data.getInt16(i + 150, 0);
 			obj.ESC_TelemetrieStats[5] = data.getInt16(i + 152, 0);
 			return obj;
-		}
+		},
+    toggleValues: function(self, checkbox){
+      var field = checkbox.target.id.split('.')[0];
+      var index = checkbox.target.id.split('.')[1];
+      FIELDS[field].values[index].visible = checkbox.target.checked;
+      privateMethods.refresh(self);
+    } 
+
 	};
 
 	var publicMethods = {
@@ -322,6 +331,10 @@
 				$(document).on("kiss:seek_to_frame", function(event, frame) {
 					console.log("Seeking to frame: " + frame);
 					privateMethods.seekToFrame(self, frame);
+				});
+
+				$(document).on("kiss:toggle_values", function(event, checkbox) {
+          privateMethods.toggleValues(self, checkbox);
 				});
 			});
 		},
