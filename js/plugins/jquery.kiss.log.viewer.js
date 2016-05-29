@@ -8,19 +8,39 @@
 					group: 'Receiver',
 					min : 1000,
 					max : 2000,
-					name: ['Throttle', 'Roll', 'Pitch', 'Yaw', 'Aux1', 'Aux2', 'Aux3', 'Aux4']
+					values: [
+            {name:'Throttle' ,visible: true,  color: "rgb(255, 0, 0)"},
+            {name:'Roll'     ,visible: true,  color: "rgb(255, 128, 0)"},
+            {name:'Pitch'    ,visible: true,  color: "rgb(255, 255, 0)"},
+            {name:'Yaw'      ,visible: true,  color: "rgb(0, 255, 0)"},
+            {name:'Aux1'     ,visible: false, color: "rgb(0, 0, 255)"},
+            {name:'Aux2'     ,visible: false, color: "rgb(128, 0, 255)"},
+            {name:'Aux3'     ,visible: false, color: "rgb(40, 30, 255)"},
+            {name:'Aux4'     ,visible: false, color: "rgb(128, 40, 255)"}
+          ]
 			},
 			'PWMOutVals' : {
 					group: 'Motors',
 					min: 1000,
 					max: 2000,
-					name: ['Motor 1', 'Motor 2', 'Motor 3', 'Motor 4', 'Motor 5', 'Motor 6']
+					values: [
+            {name:'Motor 1', visible: true,  color: "rgb(102,255,51)"},
+            {name:'Motor 2', visible: true,  color: "rgb(51,204,255)"},
+            {name:'Motor 3', visible: true,  color: "rgb(204,255,51)"},
+            {name:'Motor 4', visible: true,  color: "rgb(46,184,0)"},
+            {name:'Motor 5', visible: false, color: "rgb(255,102,51)"},
+            {name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
+          ]
 			},
 			'GyroXYZ' : {
 				group: 'Gyro XYZ',
 				min: -2000,
 				max: 2000,
-				name: ['Pitch', 'Roll', 'Yaw']
+				values: [
+          {name:'Pitch', visible: true,  color: "rgb(255, 0, 0)"},
+          {name:'Roll',  visible: true,  color: "rgb(255, 128, 0)"},
+          {name:'Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
+        ]
 		}
 	}
 	
@@ -107,9 +127,6 @@
 			console.log("Start: " + startFrame);
 			console.log("Visible: " + framesVisible);
 
-			var colors = [ "rgb(255, 0, 0)", "rgb(255, 128, 0)",
-					"rgb(255, 255, 0)", "rgb(0, 255, 0)", "rgb(0, 0, 255)",
-					"rgb(128, 0, 255)", "rgb(40, 30, 255)", "rgb(128, 40, 25)", "rgb(128, 90, 255)" ];
 
 			var context = data.context;
 			context.fillStyle = "rgb(0, 0, 0)";
@@ -126,17 +143,19 @@
 					if (field.indexOf('.')>0) {
 						console.log("Indexed property " + field);
 						var v = field.split('.');
-						privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
+						privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, FIELDS[v[0]].values[v[1]].color, startFrame);
 						if (k>7) k=0;
 					} else {
-						if (FIELDS[field].name instanceof Array ) {
-							for (var j=0; j<FIELDS[field].name.length; j++) {
-								console.log("Drawing field " + FIELDS[field].group+"->"+FIELDS[field].name[j]);
-								privateMethods.drawChart(self, field, j, 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
-								if (k>7) k=0;
+						if (FIELDS[field].values instanceof Array ) {
+              for (var j=0; j<FIELDS[field].values.length; j++) {
+                if(FIELDS[field].values[j].visible){
+                  console.log("Drawing field " + FIELDS[field].group+"->"+FIELDS[field].values[j].name);
+                  privateMethods.drawChart(self, field, j, 0, i*chartHeight, width, (i+1)*chartHeight, FIELDS[field].values[j].color, startFrame);
+                }
+                if (k>7) k=0;
 							}
 						} else {
-							privateMethods.drawChart(self, field, -1, 0, i*chartHeight, width, (i+1)*chartHeight, colors[k++], startFrame);
+							privateMethods.drawChart(self, field, -1, 0, i*chartHeight, width, (i+1)*chartHeight, "rgb(255,255,255)", startFrame);
 							if (k>7) k=0;
 						}
 					}
