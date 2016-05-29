@@ -3,6 +3,8 @@
 		return obj.data(PLUGIN_NAME);
 	};
 
+  var FREQUENCY = 0.02
+
 	var FIELDS = {
 			'RXcommands' : {
 					group: 'Receiver',
@@ -37,9 +39,9 @@
 				min: -2000,
 				max: 2000,
 				values: [
-          {name:'Pitch', visible: true,  color: "rgb(255, 0, 0)"},
-          {name:'Roll',  visible: true,  color: "rgb(255, 128, 0)"},
-          {name:'Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
+          {name:'Gyro Pitch', visible: true,  color: "rgb(255, 0, 0)"},
+          {name:'Gyro Roll',  visible: true,  color: "rgb(255, 128, 0)"},
+          {name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
         ]
 		}
 	}
@@ -117,6 +119,30 @@
 			}
 			context.stroke();
 		},
+    drawTimeline: function(self, startFrame, scale){
+      var data = pluginData(self);
+      var framesVisible = self.width() * scale;
+      var totalDuration = data.frames.length * FREQUENCY;
+      var startTime = Math.floor(startFrame * FREQUENCY);
+      var secondsVisible = framesVisible*FREQUENCY;
+      var context = data.context;
+      context.font = '10px Arial';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillStyle = "rgb(250, 255, 255)";
+      for(var i = 0; i < Math.round(secondsVisible); i++){
+         var x = i*Math.round(self.width()/secondsVisible);
+         context.fillRect(x, self.height()-4, 1, 4);
+         context.fillText(privateMethods.prettyTime(startTime + i), x, self.height()-8)
+      }
+    },
+    prettyTime: function(seconds){
+      function pad(string,pad,length) {
+        return (new Array(length+1).join(pad)+string).slice(-length);
+      }
+      var mins = Math.floor(seconds / 60);
+      return pad(mins,'0',1)+':'+pad(seconds - mins * 60,'0',2); 
+    },
 		refresh : function(self) {
 			var data = pluginData(self);
 			// here we will render the graph. Current frame in the middle.
@@ -163,6 +189,8 @@
 					}
 				}
 			}
+
+      privateMethods.drawTimeline(self, startFrame, data.scale);
 
       data.startFrame = startFrame;
 		},
@@ -300,7 +328,7 @@
 						charts: [
 						         	['RXcommands'],
 						         	['PWMOutVals.0', 'PWMOutVals.1', 'PWMOutVals.2', 'PWMOutVals.3'],
-						         	['GyroXYZ.0']
+						         	['GyroXYZ']
 						         ]
 					}, options));
 					data = pluginData(self);
