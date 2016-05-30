@@ -12,37 +12,31 @@
     'GyroXYZ'    : { min : -2000, max : 2000 }
   }
 
-	var CHARTS = {
-			'RXcommands' : {
-					values: [
-            {name:'Throttle' ,visible: true,  color: "rgb(255, 0, 0)"},
-            {name:'Roll'     ,visible: true,  color: "rgb(255, 128, 0)"},
-            {name:'Pitch'    ,visible: true,  color: "rgb(255, 255, 0)"},
-            {name:'Yaw'      ,visible: true,  color: "rgb(0, 255, 0)"},
-            {name:'Aux1'     ,visible: false, color: "rgb(0, 0, 255)"},
-            {name:'Aux2'     ,visible: false, color: "rgb(128, 0, 255)"},
-            {name:'Aux3'     ,visible: false, color: "rgb(40, 30, 255)"},
-            {name:'Aux4'     ,visible: false, color: "rgb(128, 40, 255)"}
-          ]
-			},
-			'PWMOutVals' : {
-					values: [
-            {name:'Motor 1', visible: true,  color: "rgb(102,255,51)"},
-            {name:'Motor 2', visible: true,  color: "rgb(51,204,255)"},
-            {name:'Motor 3', visible: true,  color: "rgb(204,255,51)"},
-            {name:'Motor 4', visible: true,  color: "rgb(46,184,0)"},
-            {name:'Motor 5', visible: false, color: "rgb(255,102,51)"},
-            {name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
-          ]
-			},
-			'GyroXYZ' : {
-				values: [
-          {name:'Gyro Pitch', visible: true,  color: "rgb(255, 0, 0)"},
-          {name:'Gyro Roll',  visible: true,  color: "rgb(255, 128, 0)"},
-          {name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
-        ]
-		}
-	}
+  var CHARTS = [
+  {
+    'RXcommands.0' : {name:'Throttle' ,visible: true,  color: "rgb(255, 0, 0)"},
+    'RXcommands.1' : {name:'Roll'     ,visible: true,  color: "rgb(255, 128, 0)"},
+    'RXcommands.2' : {name:'Pitch'    ,visible: true,  color: "rgb(255, 255, 0)"},
+    'RXcommands.3' : {name:'Yaw'      ,visible: true,  color: "rgb(0, 255, 0)"},
+    'RXcommands.4' : {name:'Aux1'     ,visible: false, color: "rgb(0, 0, 255)"},
+    'RXcommands.5' : {name:'Aux2'     ,visible: false, color: "rgb(128, 0, 255)"},
+    'RXcommands.6' : {name:'Aux3'     ,visible: false, color: "rgb(40, 30, 255)"},
+    'RXcommands.7' : {name:'Aux4'     ,visible: false, color: "rgb(128, 40, 255)"}
+  },
+  {
+    'PWMOutVals.0':{name:'Motor 1', visible: true,  color: "rgb(102,255,51)"},
+    'PWMOutVals.1':{name:'Motor 2', visible: true,  color: "rgb(51,204,255)"},
+    'PWMOutVals.2':{name:'Motor 3', visible: true,  color: "rgb(204,255,51)"},
+    'PWMOutVals.3':{name:'Motor 4', visible: true,  color: "rgb(46,184,0)"},
+    'PWMOutVals.4':{name:'Motor 5', visible: false, color: "rgb(255,102,51)"},
+    'PWMOutVals.5':{name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
+  },
+  {
+    'GyroXYZ.0':{name:'Gyro Pitch', visible: true,  color: "rgb(255, 0, 0)"},
+    'GyroXYZ.1':{name:'Gyro Roll',  visible: true,  color: "rgb(255, 128, 0)"},
+    'GyroXYZ.2':{name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
+  }
+  ];
 	
 	var privateMethods = {
 		build : function(self) {
@@ -98,6 +92,7 @@
 			var frame = startFrame, x = x1;
 			context.beginPath();
 			while (x < x2 && Math.floor(frame) < data.frames.length) {
+
         var boundaries = {};
         if(typeof(BOUNDARIES[field]) == 'undefined'){
           boundaries = BOUNDARIES['defaults'];
@@ -162,38 +157,23 @@
 			var context = data.context;
 			context.fillStyle = "rgb(0, 0, 0)";
 			context.fillRect(0, 0, self.width(), self.height());
-			
-			var chartHeight = height / data.charts.length; // one chart
+			var chartHeight = height / CHARTS.length; // one chart
 			var k=0;
 			
-			for (var i = 0; i<data.charts.length; i++) {
-				var chart = data.charts[i];
-				console.log("Drawing chart " + i);
-				for (var f = 0; f<chart.length; f++) {
-					var field = chart[f];
-					if (field.indexOf('.')>0) {
-						console.log("Indexed property " + field);
-						var v = field.split('.');
-            if(CHARTS[v[0]].values[v[1]].visible){
-              privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, CHARTS[v[0]].values[v[1]].color, startFrame);
-            }
-						if (k>7) k=0;
-					} else {
-						if (CHARTS[field].values instanceof Array ) {
-              for (var j=0; j<CHARTS[field].values.length; j++) {
-                if(CHARTS[field].values[j].visible){
-                  console.log("Drawing field " +CHARTS[field].values[j].name);
-                  privateMethods.drawChart(self, field, j, 0, i*chartHeight, width, (i+1)*chartHeight, CHARTS[field].values[j].color, startFrame);
-                }
-                if (k>7) k=0;
-							}
-						} else {
-							privateMethods.drawChart(self, field, -1, 0, i*chartHeight, width, (i+1)*chartHeight, "rgb(255,255,255)", startFrame);
-							if (k>7) k=0;
-						}
-					}
-				}
-			}
+      for (var i = 0; i<CHARTS.length; i++) {
+        var chart = CHARTS[i];
+        console.log("Drawing chart " + i);
+        var graphs = Object.keys(chart);
+        for (var f = 0; f<graphs.length; f++) {
+          var field = graphs[f];
+          console.log("Indexed property " + field);
+          var v = field.split('.');
+          if(chart[field].visible){
+            privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, chart[field].color, startFrame);
+          }
+          if (k>7) k=0;
+        }
+      }
 
       privateMethods.drawTimeline(self, startFrame, data.scale);
 
@@ -309,9 +289,9 @@
 			return obj;
 		},
     toggleValues: function(self, checkbox){
-      var field = checkbox.target.id.split('.')[0];
-      var index = checkbox.target.id.split('.')[1];
-      CHARTS[field].values[index].visible = checkbox.target.checked;
+      var field = checkbox.target.id.split(':')[0];
+      var index = checkbox.target.id.split(':')[1];
+      CHARTS[index][field].visible = checkbox.target.checked;
       privateMethods.refresh(self);
     } 
 
@@ -329,12 +309,7 @@
 						frames : [],
 						canvas : null,
 						visual_cursor : null,
-						context : null,
-						charts: [
-						         	['RXcommands'],
-						         	['PWMOutVals.0', 'PWMOutVals.1', 'PWMOutVals.2', 'PWMOutVals.3'],
-						         	['GyroXYZ']
-						         ]
+						context : null
 					}, options));
 					data = pluginData(self);
 				}

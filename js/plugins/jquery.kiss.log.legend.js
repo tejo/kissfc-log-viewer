@@ -29,9 +29,9 @@
           $(document)
             .on(
                 "kiss:update_legend",
-                function(event, fields, cursor,
+                function(event, charts, cursor,
                   startFrame, scale, frames) {
-                  console.log(fields, cursor,
+                  console.log(charts, cursor,
                       startFrame, scale, frames);
 
                   var frame = frames[Math
@@ -41,32 +41,46 @@
 
                   if (frame !== undefined) {
                     self.html("");
-
-                    for (var i = 0; i < fields['RXcommands'].values.length; i++) {
-                      var checkbox, label = publicMethods.buildLegendItem(fields['RXcommands'].values[i], 'RXcommands', frame.RXcommands[i], i)
-                      self.append(checkbox);
-                      self.append(label);
+                    
+                    for (var i = 0; i<charts.length; i++) {
+                      var chart = charts[i];
+                      var graphs = Object.keys(chart);
+                      for (var f = 0; f<graphs.length; f++) {
+                        var field = graphs[f];
+                        var v = field.split('.');
+                        var checkbox, label = publicMethods.buildLegendItem(chart[field], v[0], frame[v[0]][f], f, i);
+                        self.append(checkbox);
+                        self.append(label);
+                        self.append(document.createElement('br'));
+                      }
                       self.append(document.createElement('br'));
                     }
 
-                    self.append(document.createElement('br'));
+//                     for (var i = 0; i < fields['RXcommands'].values.length; i++) {
+//                       var checkbox, label = publicMethods.buildLegendItem(fields['RXcommands'].values[i], 'RXcommands', frame.RXcommands[i], i)
+//                       self.append(checkbox);
+//                       self.append(label);
+//                       self.append(document.createElement('br'));
+//                     }
+
+//                     self.append(document.createElement('br'));
 
 
-                    for (var i = 0; i < fields['PWMOutVals'].values.length; i++) {
-                      var checkbox, label = publicMethods.buildLegendItem(fields['PWMOutVals'].values[i], 'PWMOutVals', frame.PWMOutVals[i], i)
-                      self.append(checkbox);
-                      self.append(label);
-                      self.append(document.createElement('br'));
-                    }
+//                     for (var i = 0; i < fields['PWMOutVals'].values.length; i++) {
+//                       var checkbox, label = publicMethods.buildLegendItem(fields['PWMOutVals'].values[i], 'PWMOutVals', frame.PWMOutVals[i], i)
+//                       self.append(checkbox);
+//                       self.append(label);
+//                       self.append(document.createElement('br'));
+//                     }
 
-                    self.append(document.createElement('br'));
+//                     self.append(document.createElement('br'));
 
-                    for (var i = 0; i < fields['GyroXYZ'].values.length; i++) {
-                      var checkbox, label = publicMethods.buildLegendItem(fields['GyroXYZ'].values[i], 'GyroXYZ', frame.GyroXYZ[i], i)
-                      self.append(checkbox);
-                      self.append(label);
-                      self.append(document.createElement('br'));
-                    }
+//                     for (var i = 0; i < fields['GyroXYZ'].values.length; i++) {
+//                       var checkbox, label = publicMethods.buildLegendItem(fields['GyroXYZ'].values[i], 'GyroXYZ', frame.GyroXYZ[i], i)
+//                       self.append(checkbox);
+//                       self.append(label);
+//                       self.append(document.createElement('br'));
+//                     }
 
                   }
                 });
@@ -83,8 +97,8 @@
       $(document).trigger("kiss:toggle_values", [e]);
     },
 
-    buildLegendItem: function(field, groupname, frame, i){
-      var checkboxId = groupname+'.' + String(i);
+    buildLegendItem: function(field, groupname, frame, f, i){
+      var checkboxId = groupname+'.' + String(f) + ':' + String(i);
 
       var checkbox = document.createElement('input');
       checkbox.type = "checkbox";
