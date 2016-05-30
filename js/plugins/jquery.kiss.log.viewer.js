@@ -5,11 +5,15 @@
 
   var FREQUENCY = 0.02
 
-	var FIELDS = {
+  var BOUNDARIES = {
+    'defaults' : { min : 1000, max  : 2000 },
+    'RXcommands' : { min : 1000, max  : 2000 },
+    'PWMOutVals' : { min : 1000, max  : 2000 },
+    'GyroXYZ'    : { min : -2000, max : 2000 }
+  }
+
+	var CHARTS = {
 			'RXcommands' : {
-					group: 'Receiver',
-					min : 1000,
-					max : 2000,
 					values: [
             {name:'Throttle' ,visible: true,  color: "rgb(255, 0, 0)"},
             {name:'Roll'     ,visible: true,  color: "rgb(255, 128, 0)"},
@@ -22,9 +26,6 @@
           ]
 			},
 			'PWMOutVals' : {
-					group: 'Motors',
-					min: 1000,
-					max: 2000,
 					values: [
             {name:'Motor 1', visible: true,  color: "rgb(102,255,51)"},
             {name:'Motor 2', visible: true,  color: "rgb(51,204,255)"},
@@ -35,9 +36,6 @@
           ]
 			},
 			'GyroXYZ' : {
-				group: 'Gyro XYZ',
-				min: -2000,
-				max: 2000,
 				values: [
           {name:'Gyro Pitch', visible: true,  color: "rgb(255, 0, 0)"},
           {name:'Gyro Roll',  visible: true,  color: "rgb(255, 128, 0)"},
@@ -79,7 +77,7 @@
       if (data.frames.length == 0) return
 
       data.visual_cursor.css({left:cursor + "px", top: 0}).show();
-      $(document).trigger("kiss:update_legend", [ FIELDS, cursor, data.startFrame, data.scale, data.frames ]);
+      $(document).trigger("kiss:update_legend", [ CHARTS, cursor, data.startFrame, data.scale, data.frames ]);
 		},
     handleZoom : function(self, event) {
       var data = pluginData(self);
@@ -100,9 +98,16 @@
 			var frame = startFrame, x = x1;
 			context.beginPath();
 			while (x < x2 && Math.floor(frame) < data.frames.length) {
+        var boundaries = {};
+        if(typeof(BOUNDARIES[field]) == 'undefined'){
+          boundaries = BOUNDARIES['defaults'];
+        }else{
+          boundaries = BOUNDARIES[field];
+        }
+
 				var value=0;
-				var c1 = (FIELDS[field].max+FIELDS[field].min)/2;
-				var c2 = (FIELDS[field].max-FIELDS[field].min)/2;
+				var c1 = (boundaries.max+boundaries.min)/2;
+				var c2 = (boundaries.max-boundaries.min)/2;
 				var c3 = (y2-y1)/2;
 				if (index!=-1) {
 					value =  (data.frames[Math.floor(frame)][field][index] - c1) / c2;
@@ -169,16 +174,16 @@
 					if (field.indexOf('.')>0) {
 						console.log("Indexed property " + field);
 						var v = field.split('.');
-            if(FIELDS[v[0]].values[v[1]].visible){
-              privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, FIELDS[v[0]].values[v[1]].color, startFrame);
+            if(CHARTS[v[0]].values[v[1]].visible){
+              privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, CHARTS[v[0]].values[v[1]].color, startFrame);
             }
 						if (k>7) k=0;
 					} else {
-						if (FIELDS[field].values instanceof Array ) {
-              for (var j=0; j<FIELDS[field].values.length; j++) {
-                if(FIELDS[field].values[j].visible){
-                  console.log("Drawing field " + FIELDS[field].group+"->"+FIELDS[field].values[j].name);
-                  privateMethods.drawChart(self, field, j, 0, i*chartHeight, width, (i+1)*chartHeight, FIELDS[field].values[j].color, startFrame);
+						if (CHARTS[field].values instanceof Array ) {
+              for (var j=0; j<CHARTS[field].values.length; j++) {
+                if(CHARTS[field].values[j].visible){
+                  console.log("Drawing field " +CHARTS[field].values[j].name);
+                  privateMethods.drawChart(self, field, j, 0, i*chartHeight, width, (i+1)*chartHeight, CHARTS[field].values[j].color, startFrame);
                 }
                 if (k>7) k=0;
 							}
@@ -306,7 +311,7 @@
     toggleValues: function(self, checkbox){
       var field = checkbox.target.id.split('.')[0];
       var index = checkbox.target.id.split('.')[1];
-      FIELDS[field].values[index].visible = checkbox.target.checked;
+      CHARTS[field].values[index].visible = checkbox.target.checked;
       privateMethods.refresh(self);
     } 
 
