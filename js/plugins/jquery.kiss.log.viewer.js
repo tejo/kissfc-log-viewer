@@ -6,10 +6,10 @@
   var FREQUENCY = 0.02
 
   var BOUNDARIES = {
-    'defaults' : { min : 1000, max  : 2000 },
-    'RXcommands' : { min : 1000, max  : 2000 },
-    'PWMOutVals' : { min : 1000, max  : 2000 },
-    'GyroXYZ'    : { min : -2000, max : 2000 }
+    'defaults' : {min : 1000, max  : 2000},
+    'RXcommands' : {min : 1000, max  : 2000},
+    'PWMOutVals' : {min : 1000, max  : 2000},
+    'GyroXYZ'    : {min : -2000, max : 2000}
   }
 
   var CHARTS = [
@@ -152,7 +152,7 @@
 		refresh : function(self) {
 			var data = pluginData(self);
 			// here we will render the graph. Current frame in the middle.
-			var width = self.width(), height=self.height(), h2=height/2, framesVisible = width * data.scale, startFrame = data.currentFrame
+			var width = self.width(), height=self.height(), framesVisible = width * data.scale, startFrame = data.currentFrame
 					- framesVisible / 2;
 			if (startFrame < 0) startFrame = 0;
 			console.log("Center: " + data.currentFrame);
@@ -325,7 +325,7 @@
 					privateMethods.dataDetails(self, event.offsetX);
 				});
 
-        self.on("mouseout", function(event) {
+        self.on("mouseout", function() {
           data.visual_cursor.hide()
         });
 
@@ -333,7 +333,7 @@
           privateMethods.handleZoom(self, event)
         });
 
-        $(window).on('resize', function(event){
+        $(window).on('resize', function(){
           var viewer = $('#' + self.attr("id") + "_canvas")
           viewer[0].width = window.innerWidth;
           viewer[0].height = window.innerHeight;

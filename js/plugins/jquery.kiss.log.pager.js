@@ -59,7 +59,7 @@
 					}
 				});
 
-        $(window).on('resize', function(event){
+        $(window).on('resize', function(){
           var pager = $('#' + self.attr("id") + "_canvas")
           pager[0].width = window.innerWidth;
           pager[0].height = window.innerHeight;

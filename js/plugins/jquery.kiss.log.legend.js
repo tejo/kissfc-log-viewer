@@ -5,8 +5,6 @@
 
   var privateMethods = {
     build : function(self) {
-      var data = pluginData(self);
-      var id = self.attr("id");
       self.html("&nbsp;")
     }
   };
