@@ -93,12 +93,12 @@
 			context.beginPath();
 			while (x < x2 && Math.floor(frame) < data.frames.length) {
 
-        var boundaries = {};
-        if(typeof(BOUNDARIES[field]) == 'undefined'){
-          boundaries = BOUNDARIES['defaults'];
-        }else{
-          boundaries = BOUNDARIES[field];
-        }
+				var boundaries = {};
+				if (typeof(BOUNDARIES[field]) == 'undefined'){
+					boundaries = BOUNDARIES['defaults'];
+				} else {
+					boundaries = BOUNDARIES[field];
+				}
 
 				var value=0;
 				var c1 = (boundaries.max+boundaries.min)/2;
@@ -114,8 +114,14 @@
 				} else {
 					context.lineTo(x, y1+c3-value*c3*0.9);
 				}
-				x++;
-				frame += data.scale;
+				
+				if (data.scale < 1) {
+					x+=1/data.scale;
+					frame++;
+				} else {
+					x++;
+					frame += data.scale;
+				}
 			}
 			context.stroke();
 		},
