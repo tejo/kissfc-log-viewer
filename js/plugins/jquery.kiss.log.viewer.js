@@ -12,31 +12,31 @@
     'GyroXYZ'    : {min : -2000, max : 2000}
   }
 
-  var CHARTS = [
-  {
-    'RXcommands.0' : {name:'Throttle' ,visible: true,  color: "rgb(255, 0, 0)"},
-    'RXcommands.1' : {name:'Roll'     ,visible: true,  color: "rgb(255, 128, 0)"},
-    'RXcommands.2' : {name:'Pitch'    ,visible: true,  color: "rgb(255, 255, 0)"},
-    'RXcommands.3' : {name:'Yaw'      ,visible: true,  color: "rgb(0, 255, 0)"},
-    'RXcommands.4' : {name:'Aux1'     ,visible: false, color: "rgb(0, 0, 255)"},
-    'RXcommands.5' : {name:'Aux2'     ,visible: false, color: "rgb(128, 0, 255)"},
-    'RXcommands.6' : {name:'Aux3'     ,visible: false, color: "rgb(40, 30, 255)"},
-    'RXcommands.7' : {name:'Aux4'     ,visible: false, color: "rgb(128, 40, 255)"}
-  },
-  {
-    'PWMOutVals.0':{name:'Motor 1', visible: true,  color: "rgb(102,255,51)"},
-    'PWMOutVals.1':{name:'Motor 2', visible: true,  color: "rgb(51,204,255)"},
-    'PWMOutVals.2':{name:'Motor 3', visible: true,  color: "rgb(204,255,51)"},
-    'PWMOutVals.3':{name:'Motor 4', visible: true,  color: "rgb(46,184,0)"},
-    'PWMOutVals.4':{name:'Motor 5', visible: false, color: "rgb(255,102,51)"},
-    'PWMOutVals.5':{name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
-  },
-  {
-    'GyroXYZ.0':{name:'Gyro Roll', visible: true,  color: "rgb(255, 0, 0)"},
-    'GyroXYZ.1':{name:'Gyro Pitch',  visible: true,  color: "rgb(255, 128, 0)"},
-    'GyroXYZ.2':{name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
-  }
-  ];
+  var CHARTS = {
+    'Sticks': {
+      'RXcommands.0' : {name:'Throttle' ,visible: true,  color: "rgb(255, 0, 0)"},
+      'RXcommands.1' : {name:'Roll'     ,visible: true,  color: "rgb(255, 128, 0)"},
+      'RXcommands.2' : {name:'Pitch'    ,visible: true,  color: "rgb(255, 255, 0)"},
+      'RXcommands.3' : {name:'Yaw'      ,visible: true,  color: "rgb(0, 255, 0)"},
+      'RXcommands.4' : {name:'Aux1'     ,visible: false, color: "rgb(0, 0, 255)"},
+      'RXcommands.5' : {name:'Aux2'     ,visible: false, color: "rgb(128, 0, 255)"},
+      'RXcommands.6' : {name:'Aux3'     ,visible: false, color: "rgb(40, 30, 255)"},
+      'RXcommands.7' : {name:'Aux4'     ,visible: false, color: "rgb(128, 40, 255)"}
+    },
+    'Motors':{
+      'PWMOutVals.0':{name:'Motor 1', visible: true,  color: "rgb(102,255,51)"},
+      'PWMOutVals.1':{name:'Motor 2', visible: true,  color: "rgb(51,204,255)"},
+      'PWMOutVals.2':{name:'Motor 3', visible: true,  color: "rgb(204,255,51)"},
+      'PWMOutVals.3':{name:'Motor 4', visible: true,  color: "rgb(46,184,0)"},
+      'PWMOutVals.4':{name:'Motor 5', visible: false, color: "rgb(255,102,51)"},
+      'PWMOutVals.5':{name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
+    },
+    'Gyros':{
+      'GyroXYZ.0':{name:'Gyro Roll', visible: true,  color: "rgb(255, 0, 0)"},
+      'GyroXYZ.1':{name:'Gyro Pitch',  visible: true,  color: "rgb(255, 128, 0)"},
+      'GyroXYZ.2':{name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
+    }
+  };
 	
 	var privateMethods = {
 		build : function(self) {
@@ -163,11 +163,12 @@
 			var context = data.context;
 			context.fillStyle = "rgb(0, 0, 0)";
 			context.fillRect(0, 0, self.width(), self.height());
-			var chartHeight = height / CHARTS.length; // one chart
+      var chartNames = Object.keys(CHARTS);
+			var chartHeight = height / chartNames.length; // one chart
 			var k=0;
 			
-      for (var i = 0; i<CHARTS.length; i++) {
-        var chart = CHARTS[i];
+      for (var i = 0; i<chartNames.length; i++) {
+        var chart = CHARTS[chartNames[i]];
         console.log("Drawing chart " + i);
         var graphs = Object.keys(chart);
         for (var f = 0; f<graphs.length; f++) {

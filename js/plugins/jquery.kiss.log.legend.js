@@ -40,13 +40,20 @@
                   if (frame !== undefined) {
                     self.html("");
                     
-                    for (var i = 0; i<charts.length; i++) {
-                      var chart = charts[i];
+                    var chartNames = Object.keys(charts);
+                    for (var i = 0; i<chartNames.length; i++) {
+
+                      var chartName = chartNames[i];
+                      var h3 = document.createElement('h3')
+                      h3.appendChild(document.createTextNode(chartName));
+                      self.append(h3);
+
+                      var chart = charts[chartName];
                       var graphs = Object.keys(chart);
                       for (var f = 0; f<graphs.length; f++) {
                         var field = graphs[f];
                         var v = field.split('.');
-                        var checkboxId = field + ':' + String(i);
+                        var checkboxId = field + ':' + chartName;
                         var checkbox, label = publicMethods.buildLegendItem(chart[field], frame[v[0]][v[1]], checkboxId);
                         self.append(checkbox);
                         self.append(label);
