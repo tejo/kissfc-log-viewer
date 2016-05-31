@@ -32,8 +32,8 @@
     'PWMOutVals.5':{name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
   },
   {
-    'GyroXYZ.0':{name:'Gyro Pitch', visible: true,  color: "rgb(255, 0, 0)"},
-    'GyroXYZ.1':{name:'Gyro Roll',  visible: true,  color: "rgb(255, 128, 0)"},
+    'GyroXYZ.0':{name:'Gyro Roll', visible: true,  color: "rgb(255, 0, 0)"},
+    'GyroXYZ.1':{name:'Gyro Pitch',  visible: true,  color: "rgb(255, 128, 0)"},
     'GyroXYZ.2':{name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
   }
   ];
