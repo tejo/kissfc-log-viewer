@@ -3,11 +3,11 @@
     return obj.data(PLUGIN_NAME);
   };
 
-  var SETTINGS = {
-    'chart1': {}, 
-    'chart2': {}, 
-    'chart3': {}
-  };
+  var SETTINGS = [
+    {name:'chart1'}, 
+    {name:'chart2'}, 
+    {name:'chart3'}
+  ];
 
   var privateMethods = {
     build : function(self) {
@@ -42,7 +42,14 @@
     addChart: function(self){
 			var data = pluginData(self);
       console.log(data);
-    }
+    },
+
+    loadSettings: function(self){
+			var data = pluginData(self);
+      for(var i in SETTINGS) {
+        data.panel.appendChild(document.createTextNode(SETTINGS[i].name));
+      } 
+    },
   };
 
   var publicMethods = {
@@ -55,7 +62,11 @@
           }
           privateMethods.build(self);
 
-          self.on('click', function(e){
+          self.on('click', function(){
+            if (data.panel.style.display == 'block'){
+              return; 
+            }  
+            privateMethods.loadSettings(self);
             data.panel.style.display = 'block';  
           });
 
