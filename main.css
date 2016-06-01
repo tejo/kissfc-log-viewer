@@ -21,4 +21,20 @@ body {
 	background-color: #444;
 }
 
+a#settings, a#settings:hover{
+  color: white;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+#settings_panel {
+  position: absolute;
+  top: 48px;
+  left: 200px;
+  z-index: 1;
+  background-color: inherit;
+  padding: 10px;
+  margin: 20px;
+  display: none;
+}
 

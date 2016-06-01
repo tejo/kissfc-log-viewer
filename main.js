@@ -4,6 +4,7 @@ $(document).ready(function() {
 	$('#log').kissLogViewer();
 	$('#pager').kissLogPager();
 	$('#legend').kissLogLegend();
+	$('#settings').kissLogSettings();
 
 	$('#openFile').on('click', function() {
 		var accepts = [ {
