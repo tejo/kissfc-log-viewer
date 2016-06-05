@@ -23,19 +23,18 @@
     <script id="chart_tpl" type="x-template">
       <div class="chart">
      name <input type="text" class="chart_name" name="" value="{{chart_name}}" />
-      <a class="delete_chart" style="cursor: pointer;">x</a>
+      <a class="delete_chart" style="cursor: pointer;">remove chart</a>
       <div class="fields"> </div>
       <button class="add_field">add field</button>
       </div>
     </script>
     <script id="field_tpl" type="x-template">
       <div>
-        field 
         <select>
           <option>{{selected}}</option> 
           {{options}}
         </select> 
-      <a class="delete_field" style="cursor: pointer;">x</a>
+      <a class="delete_field" style="cursor: pointer;">remove field</a>
       </div>
     </script>
 

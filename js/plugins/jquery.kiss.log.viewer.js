@@ -32,11 +32,31 @@
       'PWMOutVals.5':{name:'Motor 6', visible: false, color: "rgb(204,51,255)"}
     },
     'Gyros':{
-      'GyroXYZ.0':{name:'Gyro Roll', visible: true,  color: "rgb(255, 0, 0)"},
-      'GyroXYZ.1':{name:'Gyro Pitch',  visible: true,  color: "rgb(255, 128, 0)"},
+      'GyroXYZ.0':{name:'Gyro Roll', visible: true,   color: "rgb(255, 0, 0)"},
+      'GyroXYZ.1':{name:'Gyro Pitch',  visible: true, color: "rgb(255, 128, 0)"},
       'GyroXYZ.2':{name:'Gyro Yaw',   visible: true,  color: "rgb(255, 255, 0)"}
     }
   };
+
+  var COLORS = [
+    "rgb(255, 0, 0)",    
+    "rgb(255, 128, 0)",
+    "rgb(255, 255, 0)",
+    "rgb(0, 255, 0)",
+    "rgb(0, 0, 255)",
+    "rgb(128, 0, 255)",
+    "rgb(40, 30, 255)",
+    "rgb(128, 40, 255)",
+    "rgb(102,255,51)",
+    "rgb(51,204,255)",
+    "rgb(204,255,51)",
+    "rgb(46,184,0)",
+    "rgb(255,102,51)",
+    "rgb(204,51,255)",
+    "rgb(255, 0, 0)",
+    "rgb(255, 128, 0)",
+    "rgb(255, 255, 0)"
+  ];
 	
 	var privateMethods = {
 		build : function(self) {
@@ -303,21 +323,14 @@
     },
     applySettings: function(self, settings){
 
-      function getRandomColor() {
-        var letters = '0123456789ABCDEF'.split('');
-        var color = '#';
-        for (var i = 0; i < 6; i++ ) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-      }  
-
       CHARTS = {};
+      var colorIndex = 0;
       for(var i in settings){
         CHARTS[settings[i].name] = {}
         for(var f in settings[i].fields){
           var fieldName = settings[i].fields[f];
-          CHARTS[settings[i].name][fieldName] = {name:fieldName, visible: true,  color: getRandomColor()}
+          CHARTS[settings[i].name][fieldName] = {name:fieldName, visible: true,  color: COLORS[colorIndex]}
+          colorIndex = colorIndex > COLORS.length ? 0 : colorIndex + 1;
         }
       }
       privateMethods.refresh(self);
