@@ -14,7 +14,32 @@
     <body  style="overflow:auto">
     
     <input type="button" id="openFile" value="Open file"/>
-    <!-- <a id="settings" href="#">customize graph</a> -->
+    <a id="settings" href="#">customize graph</a> 
+    <div id="settings_panel">
+      <a id="settings_close_button" style="cursor: pointer;">x</a>
+      <button id="settings_add_chart">add chart</button>
+      <button id="settings_save">save</button>
+    </div>
+    <script id="chart_tpl" type="x-template">
+      <div class="chart">
+     name <input type="text" class="chart_name" name="" value="{{chart_name}}" />
+      <a class="delete_chart" style="cursor: pointer;">x</a>
+      <div class="fields"> </div>
+      <button class="add_field">add field</button>
+      </div>
+    </script>
+    <script id="field_tpl" type="x-template">
+      <div>
+        field 
+        <select>
+          <option>{{selected}}</option> 
+          {{options}}
+        </select> 
+      <a class="delete_field" style="cursor: pointer;">x</a>
+      </div>
+    </script>
+
+
     <div id="container">
       <div id="left-c" style="float: left; width: 200px;"> 
         <div id="legend" style="width:100%"></div>   

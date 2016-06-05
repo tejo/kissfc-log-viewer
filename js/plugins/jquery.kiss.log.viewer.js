@@ -300,8 +300,28 @@
       var index = checkbox.target.id.split(':')[1];
       CHARTS[index][field].visible = checkbox.target.checked;
       privateMethods.refresh(self);
-    } 
+    },
+    applySettings: function(self, settings){
 
+      function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }  
+
+      CHARTS = {};
+      for(var i in settings){
+        CHARTS[settings[i].name] = {}
+        for(var f in settings[i].fields){
+          var fieldName = settings[i].fields[f];
+          CHARTS[settings[i].name][fieldName] = {name:fieldName, visible: true,  color: getRandomColor()}
+        }
+      }
+      privateMethods.refresh(self);
+    }
 	};
 
 	var publicMethods = {
@@ -350,6 +370,10 @@
 
 				$(document).on("kiss:toggle_values", function(event, checkbox) {
           privateMethods.toggleValues(self, checkbox);
+				});
+
+				$(document).on("kiss:apply_settings", function(event, settings) {
+          privateMethods.applySettings(self, settings);
 				});
 			});
 		},
