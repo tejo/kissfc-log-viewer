@@ -148,7 +148,7 @@
     drawTimeline: function(self, startFrame, scale){
       var data = pluginData(self);
       var framesVisible = self.width() * scale;
-      var totalDuration = data.frames.length * FREQUENCY;
+      // var totalDuration = data.frames.length * FREQUENCY;
       var startTime = Math.floor(startFrame * FREQUENCY);
       var secondsVisible = framesVisible*FREQUENCY;
       var context = data.context;
@@ -321,15 +321,17 @@
       CHARTS[index][field].visible = checkbox.target.checked;
       privateMethods.refresh(self);
     },
-    applySettings: function(self, settings){
 
+    applySettings: function(self, settings, friendlyNames){
       CHARTS = {};
       var colorIndex = 0;
       for(var i in settings){
         CHARTS[settings[i].name] = {}
         for(var f in settings[i].fields){
           var fieldName = settings[i].fields[f];
-          CHARTS[settings[i].name][fieldName] = {name:fieldName, visible: true,  color: COLORS[colorIndex]}
+          //search for a pretty name
+          var friendlyFieldname = typeof(friendlyNames[fieldName]) == 'undefined' ? fieldName : friendlyNames[fieldName];
+          CHARTS[settings[i].name][fieldName] = {name:friendlyFieldname, visible: true,  color: COLORS[colorIndex]}
           colorIndex = colorIndex > COLORS.length ? 0 : colorIndex + 1;
         }
       }
@@ -385,8 +387,8 @@
           privateMethods.toggleValues(self, checkbox);
 				});
 
-				$(document).on("kiss:apply_settings", function(event, settings) {
-          privateMethods.applySettings(self, settings);
+				$(document).on("kiss:apply_settings", function(event, settings, friendlyNames) {
+          privateMethods.applySettings(self, settings, friendlyNames);
 				});
 			});
 		},
@@ -425,9 +427,6 @@
 			}
 			$(document).trigger("kiss:set_frames", [ data.frames ]); // set
 			privateMethods.refresh(self);
-
-      //make settings butto visible
-      $('#settings').show();
 		},
 
 	};

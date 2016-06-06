@@ -48,7 +48,6 @@
       privateMethods.loadSettings(self);
     },
 
-
     addChart: function(self){
 			var data = pluginData(self);
       data.panel.append(privateMethods.templateAssing(data.chart_tpl, 'chart_name', 'chart'+($('.chart_name').size()+1)));
@@ -56,8 +55,7 @@
 
     addField: function(self, chartFields){
 			var data = pluginData(self);
-      var field = $(privateMethods.templateAssing(data.field_tpl, 'selected', 'select one'));
-      chartFields.append(field);
+      chartFields.append(data.field_tpl);
     },
 
     loadSettings: function(self){
@@ -65,12 +63,14 @@
       for(var i in SETTINGS) {
         var chart = $(privateMethods.templateAssing(data.chart_tpl, 'chart_name', SETTINGS[i].name));
         for(var f in SETTINGS[i].fields){
-          var field = privateMethods.templateAssing(data.field_tpl, 'selected', SETTINGS[i].fields[f])
-          chart.find('.fields').append($.parseHTML(field));
+          var select = privateMethods.templateAssing(data.field_tpl, 'selected', SETTINGS[i].fields[f]);
+          select = privateMethods.setSelectedOption(select, SETTINGS[i].fields[f])
+          chart.find('.fields').append($.parseHTML(select));
         }
         data.panel.append(chart);
       } 
     },
+
     templateAssing: function(tpl, propName, propValue){
       return tpl.replace( "{{"+propName+"}}", propValue);
     },
@@ -80,31 +80,40 @@
         if(value == '-'){
           return '<option disabled>_________ </option>'
         }else{
-          return '<option>'+value+'</option>'
+          if (typeof(SELECT_OPTIONS_FRIENDLY_NAMES[value]) =="undefined"){
+            return '<option value="'+value+'">'+value+'</option>'
+          }else{
+            return '<option value="'+value+'">'+SELECT_OPTIONS_FRIENDLY_NAMES[value]+'</option>';
+          }
         }
-      });
+      }).join('');
     },
 
-    saveSettings: function(self){
+    setSelectedOption: function(tpl, selected) {
+      return tpl.replace('"' + selected + '"', '"' + selected + '" selected'); 
+    },
+
+    saveSettings: function(){
       SETTINGS = []
       $('.chart').each(function(){
         var chart = $(this), chartSettings = {fields:[]};
         chartSettings.name = chart.find('.chart_name').val(); 
         chart.find('.fields').find('select option:selected').each(function(){
-          var selectedOption = $(this).text();
-          if(selectedOption != 'select one'){
-            if (typeof(GROUP_MAP[selectedOption]) =="undefined"){
-              chartSettings.fields.push(selectedOption); 
+          var selectedOptionText = $(this).text();
+          var selectedOptionValue = $(this).val();
+          if(selectedOptionText != 'select one'){
+            if (typeof(GROUP_MAP[selectedOptionValue]) =="undefined"){
+              chartSettings.fields.push(selectedOptionValue); 
             }else{
-              for(var i = 0; i < GROUP_MAP[selectedOption]; i++){
-                chartSettings.fields.push(selectedOption + '.' + i); 
+              for(var i = 0; i < GROUP_MAP[selectedOptionValue]; i++){
+                chartSettings.fields.push(selectedOptionValue + '.' + i); 
               }
             }
           }
         });
         SETTINGS.push(chartSettings)
       });
-      $(document).trigger("kiss:apply_settings", [SETTINGS]);
+      $(document).trigger("kiss:apply_settings", [SETTINGS, SELECT_OPTIONS_FRIENDLY_NAMES]);
     }
   };
 
@@ -128,7 +137,7 @@
 
         $('#settings_save').on('click', function(){
           data.panel.hide();
-          privateMethods.saveSettings(self);
+          privateMethods.saveSettings();
         })
 
         $('#settings_add_chart').on('click', function(){
@@ -147,6 +156,10 @@
           privateMethods.addField(self,$(this).first().prev());
         });
 
+				$(document).on("kiss:set_frames", function(event, frames) {
+          $('#settings').show();
+				});
+
       });
 
     },
@@ -157,7 +170,31 @@
     }
   };
 
+  var SELECT_OPTIONS_FRIENDLY_NAMES = {
+      'RXcommands':'Sticks',
+      'RXcommands.0':'Throttle',
+      'RXcommands.1':'Roll',
+      'RXcommands.2':'Pitch',
+      'RXcommands.3':'Yaw',
+      'RXcommands.4':'Aux1',
+      'RXcommands.5':'Aux2',
+      'RXcommands.6':'Aux3',
+      'RXcommands.7':'Aux4',
+      'PWMOutVals':'Motors',
+      'PWMOutVals.0':'Motor 1',
+      'PWMOutVals.1':'Motor 2',
+      'PWMOutVals.2':'Motor 3',
+      'PWMOutVals.3':'Motor 4',
+      'PWMOutVals.4':'Motor 5',
+      'PWMOutVals.5':'Motor 6',
+      'GyroXYZ':'Gyros', 
+      'GyroXYZ.0':'Gyro Roll',
+      'GyroXYZ.1':'Gyro Pitch',
+      'GyroXYZ.2':'Gyro Yaw',
+  }
+
   var SELECT_OPTIONS = [
+      'select one',
       '-',
       'RXcommands',
       'RXcommands.0',
