@@ -424,8 +424,10 @@
 				}
 			}
 			$(document).trigger("kiss:set_frames", [ data.frames ]); // set
-																		// pagers
 			privateMethods.refresh(self);
+
+      //make settings butto visible
+      $('#settings').show();
 		},
 
 	};

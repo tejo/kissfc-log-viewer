@@ -51,19 +51,19 @@
 
     addChart: function(self){
 			var data = pluginData(self);
-      data.panel.append($.parseHTML(privateMethods.templateAssing(data.chart_tpl, 'chart_name', 'chart'+($('.chart_name').size()+1))));
+      data.panel.append(privateMethods.templateAssing(data.chart_tpl, 'chart_name', 'chart'+($('.chart_name').size()+1)));
     },
 
     addField: function(self, chartFields){
 			var data = pluginData(self);
-      var field = $($.parseHTML(privateMethods.templateAssing(data.field_tpl, 'selected', 'select one')));
+      var field = $(privateMethods.templateAssing(data.field_tpl, 'selected', 'select one'));
       chartFields.append(field);
     },
 
     loadSettings: function(self){
 			var data = pluginData(self);
       for(var i in SETTINGS) {
-        var chart = $($.parseHTML(privateMethods.templateAssing(data.chart_tpl, 'chart_name', SETTINGS[i].name)));
+        var chart = $(privateMethods.templateAssing(data.chart_tpl, 'chart_name', SETTINGS[i].name));
         for(var f in SETTINGS[i].fields){
           var field = privateMethods.templateAssing(data.field_tpl, 'selected', SETTINGS[i].fields[f])
           chart.find('.fields').append($.parseHTML(field));
