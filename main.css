@@ -29,12 +29,51 @@ a#settings, a#settings:hover{
 
 #settings_panel {
   position: absolute;
-  top: 48px;
-  left: 200px;
+  top: -8px;
+  left: 178px;
+  width: 258px;
   z-index: 1;
   background-color: inherit;
   padding: 10px;
   margin: 20px;
   display: none;
+  border: 1px solid white;
 }
 
+#logo{
+    width: 100px;
+    vertical-align: middle;
+}
+
+.chart {
+  padding: 5px;
+  margin: 5px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: solid white 1px;
+}
+
+.chart input {
+  width: 141px;
+}
+
+select {
+  margin-top: 5px;
+  margin-left: 22px;
+}
+
+#settings_close_button {
+  position: absolute;
+  top: 8px;
+  right: 5px;
+}
+
+#settings_save {
+  margin-left: 21px;
+}
+
+.fields {
+  margin: 5px;
+  padding: 5px;
+}
+}
