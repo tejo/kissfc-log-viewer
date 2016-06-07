@@ -53,8 +53,12 @@
                       for (var f = 0; f<graphs.length; f++) {
                         var field = graphs[f];
                         var v = field.split('.');
+                        var frameValue =  frame[v[0]][v[1]];
+                        if (v.length == 1) {
+                          frameValue =  frame[v[0]];
+                        }
                         var checkboxId = field + ':' + chartName;
-                        var checkbox, label = publicMethods.buildLegendItem(chart[field], frame[v[0]][v[1]], checkboxId);
+                        var checkbox, label = publicMethods.buildLegendItem(chart[field], frameValue, checkboxId);
                         self.append(checkbox);
                         self.append(label);
                         self.append(document.createElement('br'));

@@ -197,8 +197,12 @@
           var field = graphs[f];
           console.log("Indexed property " + field);
           var v = field.split('.');
+          var index = -1
+          if (v.length > 1){
+              index =  +v[1];
+          }
           if(chart[field].visible){
-            privateMethods.drawChart(self, v[0], +v[1], 0, i*chartHeight, width, (i+1)*chartHeight, chart[field].color, startFrame);
+            privateMethods.drawChart(self, v[0], index, 0, i*chartHeight, width, (i+1)*chartHeight, chart[field].color, startFrame);
           }
           if (k>7) k=0;
         }
